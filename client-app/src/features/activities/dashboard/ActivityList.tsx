@@ -3,8 +3,9 @@ import { Button, Item, Label, Segment } from 'semantic-ui-react';
 type ActivityListProps = {
     activities:Activity[];
     isError:boolean;
+    selectActivity:(id:string)=>void;
 }
-function ActivityList({activities,isError}:ActivityListProps) {
+function ActivityList({activities,isError,selectActivity}:ActivityListProps) {
   return (
     <Segment>
         <Item.Group divided>
@@ -21,7 +22,7 @@ function ActivityList({activities,isError}:ActivityListProps) {
                                 <div>{activity.city}, {activity.venue}</div>
                             </Item.Description>
                             <Item.Extra>
-                                <Button floated='right' content="View" color="blue"/>
+                                <Button floated='right' content="View" color="blue" onClick={()=>selectActivity(activity.id)}/>
                                 <Label basic content={activity.category}/>
                             </Item.Extra>
                         </Item.Content>

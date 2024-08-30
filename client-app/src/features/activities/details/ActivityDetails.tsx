@@ -2,8 +2,10 @@ import { Card,Image,CardContent, CardHeader, CardMeta, CardDescription, Button }
 import { Activity } from "../../../app/models/activity";
 type ActivityDetailsProps = {
     activity:Activity;
+    cancelSelectedActivity:()=>void;
+    openForm:(id:string)=>void;
 };
-function ActivityDetails({activity}:ActivityDetailsProps) {
+function ActivityDetails({activity,cancelSelectedActivity,openForm}:ActivityDetailsProps) {
   return (
     <Card fluid>
       <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
@@ -18,8 +20,8 @@ function ActivityDetails({activity}:ActivityDetailsProps) {
       </CardContent>
       <CardContent extra>
         <Button.Group widths={2}>
-            <Button basic color='blue' content="Edit"></Button>
-            <Button basic color='grey' content="Cancel"></Button>
+            <Button basic color='blue' content="Edit" onClick={()=>openForm(activity.id)}></Button>
+            <Button basic color='grey' content="Cancel" onClick={()=>cancelSelectedActivity()}></Button>
         </Button.Group>
       </CardContent>
     </Card>

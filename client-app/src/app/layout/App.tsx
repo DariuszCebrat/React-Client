@@ -8,6 +8,8 @@ import ActivityDashboard from "../../features/activities/dashboard/ActivityDashb
 function App() {
   const [isError, setIsError] = useState<boolean>(false);
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState<Activity|undefined>(undefined);
+  const [editMode, setEditMode] = useState<boolean>(false);
   useEffect(() => {
     axios
       .get<Activity[]>("http://localhost:5182/Activities")
@@ -23,11 +25,33 @@ function App() {
         setIsError(true);
       });
   }, []);
+  function handleSelectActivity(id:string){
+    setSelectedActivity(activities.find(activity=>activity.id ===id));
+  }
+  function handleCancelSelectedActivity(){
+    setSelectedActivity(undefined);
+  }
+  function handleOpenForm(id?:string){
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    id ? handleSelectActivity(id) : handleCancelSelectedActivity() ;
+    setEditMode(true);
+  }
+  function handleCloseForm(){
+    setEditMode(false);
+  }
   return (
     <>
-      <NavBar />
+      <NavBar openForm={handleOpenForm} />
       <Container>
-       <ActivityDashboard activities={activities} isError={isError}/>
+       <ActivityDashboard 
+       selectedActivity={selectedActivity}
+       cancelSelectedActivity={handleCancelSelectedActivity}
+       selectActivity={handleSelectActivity}
+       activities={activities} 
+       isError={isError}
+       editMode={editMode}
+       openForm={handleOpenForm}
+       closeForm={handleCloseForm}/>
       </Container>
     </>
   );
