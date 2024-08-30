@@ -4,8 +4,9 @@ type ActivityListProps = {
     activities:Activity[];
     isError:boolean;
     selectActivity:(id:string)=>void;
+    deleteActivity:(id:string)=>void;
 }
-function ActivityList({activities,isError,selectActivity}:ActivityListProps) {
+function ActivityList({deleteActivity,activities,isError,selectActivity}:ActivityListProps) {
   return (
     <Segment>
         <Item.Group divided>
@@ -23,6 +24,7 @@ function ActivityList({activities,isError,selectActivity}:ActivityListProps) {
                             </Item.Description>
                             <Item.Extra>
                                 <Button floated='right' content="View" color="blue" onClick={()=>selectActivity(activity.id)}/>
+                                <Button floated='right' content="Delete" color="red" onClick={()=>deleteActivity(activity.id)}/>
                                 <Label basic content={activity.category}/>
                             </Item.Extra>
                         </Item.Content>

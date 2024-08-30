@@ -39,6 +39,17 @@ function App() {
   function handleCloseForm(){
     setEditMode(false);
   }
+  function handleCreateOrEditActivity(activity:Activity){
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    activity.id
+    ? setActivities([...activities.filter(x=>x.id!==activity.id),activity])
+    : setActivities([...activities,activity]);
+    setEditMode(false);
+    setSelectedActivity(activity);
+  }
+  function handleDeleteActivity(id:string){
+    setActivities(activities.filter(x=>x.id!==id));
+  }
   return (
     <>
       <NavBar openForm={handleOpenForm} />
@@ -51,7 +62,9 @@ function App() {
        isError={isError}
        editMode={editMode}
        openForm={handleOpenForm}
-       closeForm={handleCloseForm}/>
+       closeForm={handleCloseForm}
+       createOrEdit = {handleCreateOrEditActivity}
+       deleteActivity={handleDeleteActivity}/>
       </Container>
     </>
   );
