@@ -14,8 +14,9 @@ type ActivityDashboardProps={
     closeForm:()=>void;
     createOrEdit:(activity:Activity)=>void;
     deleteActivity:(id:string)=>void;
+    submitting:boolean;
 }
-function ActivityDashboard({deleteActivity,createOrEdit,activities,isError,selectedActivity,selectActivity,cancelSelectedActivity,editMode,openForm,closeForm}:ActivityDashboardProps) {
+function ActivityDashboard({submitting,deleteActivity,createOrEdit,activities,isError,selectedActivity,selectActivity,cancelSelectedActivity,editMode,openForm,closeForm}:ActivityDashboardProps) {
   return (
     <Grid>
         <Grid.Column width="10">
@@ -23,7 +24,8 @@ function ActivityDashboard({deleteActivity,createOrEdit,activities,isError,selec
             activities={activities}
             isError={isError} 
             selectActivity={selectActivity}
-            deleteActivity={deleteActivity} />
+            deleteActivity={deleteActivity} 
+            submitting={submitting}/>
         </Grid.Column>
         <Grid.Column width="6">
             {selectedActivity && !editMode &&
@@ -35,6 +37,7 @@ function ActivityDashboard({deleteActivity,createOrEdit,activities,isError,selec
             <ActivityForm closeForm={closeForm} 
             activity={selectedActivity}
             createOrEdit={createOrEdit}
+            submitting={submitting}
             />}
         </Grid.Column>
     </Grid>

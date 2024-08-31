@@ -12,7 +12,7 @@ function ActivityDetails({activity,cancelSelectedActivity,openForm}:ActivityDeta
       <CardContent>
         <CardHeader>{activity.title}</CardHeader>
         <CardMeta>
-          <span >{activity.date}</span>
+          <span >{activity.date.replace("T"," ")}</span>
         </CardMeta>
         <CardDescription>
           {activity.description}

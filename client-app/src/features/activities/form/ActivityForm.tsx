@@ -5,8 +5,9 @@ type ActivityFormProps={
     closeForm:()=>void;
     activity:Activity|undefined;
     createOrEdit:(activity:Activity)=>void;
+    submitting:boolean;
 }
-function ActivityForm({closeForm,activity:selectedActivity,createOrEdit}:ActivityFormProps) {
+function ActivityForm({submitting,closeForm,activity:selectedActivity,createOrEdit}:ActivityFormProps) {
   const initalState:Activity = selectedActivity??
   {
     id:'',
@@ -31,10 +32,10 @@ setActivity({...activity,[name]:value});
             <Form.Input placeholder="Title" value ={activity.title} name="title" onChange={e=>handleInputChange(e)}/>
             <Form.TextArea placeholder="Description" value={activity.description} name="description" onChange={e=>handleInputChange(e)}/>
             <Form.Input placeholder="Category" value={activity.category} name="category" onChange={e=>handleInputChange(e)}/>
-            <Form.Input placeholder="Date" value={activity.date} name="date" onChange={e=>handleInputChange(e)}/>
+            <Form.Input type="datetime-local" placeholder="Date" value={activity.date} name="date" onChange={e=>handleInputChange(e)}/>
             <Form.Input placeholder="City" value={activity.city} name="city" onChange={e=>handleInputChange(e)}/>
             <Form.Input placeholder="Venue" value={activity.venue} name="venue" onChange={e=>handleInputChange(e)}/>
-            <Button floated='right' positive type="submit" content="Submit" />
+            <Button loading={submitting} floated='right' positive type="submit" content="Submit" />
             <Button floated='right' type="submit" content="Cancel" onClick={()=>closeForm()}/>
         </Form>
     </Segment>
