@@ -1,47 +1,26 @@
 import { Grid } from 'semantic-ui-react'
-import { Activity } from '../../../app/models/activity'
 import ActivityList from './ActivityList';
 import ActivityDetails from '../details/ActivityDetails';
 import ActivityForm from '../form/ActivityForm';
-type ActivityDashboardProps={
-    activities:Activity[];
-    isError:boolean;
-    selectedActivity:Activity|undefined;
-    cancelSelectedActivity:()=>void;
-    selectActivity:(id:string)=>void;
-    editMode:boolean;
-    openForm:(id:string)=>void;
-    closeForm:()=>void;
-    createOrEdit:(activity:Activity)=>void;
-    deleteActivity:(id:string)=>void;
-    submitting:boolean;
-}
-function ActivityDashboard({submitting,deleteActivity,createOrEdit,activities,isError,selectedActivity,selectActivity,cancelSelectedActivity,editMode,openForm,closeForm}:ActivityDashboardProps) {
+import { useStore } from '../../../app/store/store';
+import { observer } from 'mobx-react-lite';
+
+function ActivityDashboard() {
+  const {activityStore} = useStore();
+  const {selectedActivity,editMode} = activityStore;
   return (
     <Grid>
         <Grid.Column width="10">
-            <ActivityList 
-            activities={activities}
-            isError={isError} 
-            selectActivity={selectActivity}
-            deleteActivity={deleteActivity} 
-            submitting={submitting}/>
+            <ActivityList />
         </Grid.Column>
         <Grid.Column width="6">
             {selectedActivity && !editMode &&
-            <ActivityDetails 
-            activity={selectedActivity} 
-            cancelSelectedActivity={cancelSelectedActivity} 
-            openForm={openForm}/>}
+            <ActivityDetails/>}
             {editMode &&
-            <ActivityForm closeForm={closeForm} 
-            activity={selectedActivity}
-            createOrEdit={createOrEdit}
-            submitting={submitting}
-            />}
+            <ActivityForm  />}
         </Grid.Column>
     </Grid>
   )
 }
 
-export default ActivityDashboard
+export default observer(ActivityDashboard)
