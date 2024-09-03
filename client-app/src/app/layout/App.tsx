@@ -1,18 +1,26 @@
 import "./index.css";
-import {  Container } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 import NavBar from "./NavBar";
 import { observer } from "mobx-react-lite";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import HomePage from "../../features/activities/home/HomePage";
 function App() {
+  const location = useLocation();
 
   return (
     <>
-      <NavBar />
-      <Container>
-        <Outlet/>
-      </Container>
+      {location.pathname === "/" ? (
+        <HomePage />
+      ) : (
+        <>
+          <NavBar />
+          <Container>
+            <Outlet />
+          </Container>
+        </>
+      )}
     </>
   );
 }
 
-export default observer( App);
+export default observer(App);
