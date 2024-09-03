@@ -7,7 +7,8 @@ export default class ActivityStore{
     selectedActivity:Activity|undefined = undefined;
     editMode=false;
     loading=false;
-    loadingInitial=true;
+    loadingInitial=false;
+    private getActivity=(id:string)=>this.activityRegistry.get(id);
     constructor(){
         makeAutoObservable(this);
     }
@@ -16,22 +17,51 @@ export default class ActivityStore{
             .sort((a,b)=>Date.parse(a.date)-Date.parse(b.date));
     }
     loadActivities =async ()=>{
+        this.setLoadingInitial(true);
         try {
             const activities = await agent.Activities.list();
             runInAction(()=>{
                 activities.forEach(activity=>{
-                    activity.date = activity.date.slice(0,activity.date.lastIndexOf(":"));
-                    this.activityRegistry.set(activity.id,activity);
+                    this.setActivity(activity);
                 })
-                this.loadingInitial = false;
+                this.setLoadingInitial(false);
             })
         }
         catch(error){
                 console.log(error)
                 runInAction(()=>{
-                    this.loadingInitial = false;
+                    this.setLoadingInitial(false);
                 })
         }
+    }
+    loadActivity = async(id:string)=>{
+        let activity = this.getActivity(id);
+        if(activity){
+            this.selectedActivity = activity;
+            return activity;
+        }
+        else{
+            this.setLoadingInitial(true);
+            try{
+                activity = await agent.Activities.details(id);
+                this.setActivity(activity);
+                runInAction(()=>{
+                    this.selectedActivity = activity;
+                })
+                this.setLoadingInitial(false);
+                return activity;
+            }
+            catch(error)
+            {
+                console.log(error);
+                this.setLoadingInitial(false);
+            }
+        }
+       
+    }
+    private setActivity=(activity:Activity)=>{
+        activity.date = activity.date.slice(0,activity.date.lastIndexOf(":"));
+        this.activityRegistry.set(activity.id,activity);
     }
     selectActivity=(id:string)=>{
         this.selectedActivity = this.activityRegistry.get(id);
@@ -58,7 +88,9 @@ export default class ActivityStore{
                 this.selectedActivity = activity;
                 this.editMode=false;
                 this.loading=false;
+
             })
+            return id;
         }
         catch(error)
         {
@@ -66,6 +98,8 @@ export default class ActivityStore{
             runInAction(()=>{
                 this.loading=false;
             })
+
+            return "";
         }
     }
     updateActivity=async (activity:Activity)=>{
@@ -104,5 +138,9 @@ export default class ActivityStore{
             this.loading=false;
         }
         
+    }
+    setLoadingInitial (value:boolean)
+    {
+        this.loadingInitial = value;
     }
 }

@@ -2,8 +2,11 @@ import { SyntheticEvent, useState } from 'react';
 import { Button, Item, Label, Segment } from 'semantic-ui-react';
 import { useStore } from '../../../app/store/store';
 import { observer } from 'mobx-react-lite';
+import useWindowSize from '../../hooks/useWindowsSize';
+import { Link,  } from 'react-router-dom';
 
 function ActivityList() {
+   const size=useWindowSize();
    const {activityStore} = useStore();
    const {activityByDate,selectActivity,deleteActivity,loading} = activityStore;
 
@@ -26,7 +29,9 @@ function ActivityList() {
                                 <div>{activity.city}, {activity.venue}</div>
                             </Item.Description>
                             <Item.Extra>
-                                <Button floated='right' content="View" color="blue" onClick={()=>selectActivity(activity.id)}/>
+                                {size && size.width>800 
+                                ?<Button floated='right' content="View" color="blue" onClick={()=>selectActivity(activity.id)}/>
+                                : <Button floated='right' content="View" color="blue" as={Link} to={`/activities/${activity.id}`}/> }
                                 <Button name={activity.id} loading={loading && target===activity.id} floated='right' content="Delete" color="red" onClick={(e)=>handleDeleteActivity(e,activity.id)}/>
                                 <Label basic content={activity.category}/>
                             </Item.Extra>
