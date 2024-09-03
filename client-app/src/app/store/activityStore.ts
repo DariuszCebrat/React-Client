@@ -12,9 +12,18 @@ export default class ActivityStore{
     constructor(){
         makeAutoObservable(this);
     }
-    get activityByDate(){
+    get activitiesByDate(){
         return Array.from(this.activityRegistry.values())
             .sort((a,b)=>Date.parse(a.date)-Date.parse(b.date));
+    }
+    get groupedActivities(){
+        return Object.entries(
+            this.activitiesByDate.reduce((activities,activity)=>{
+                const dateShort = activity.dateShort
+                activities[dateShort] = activities[dateShort]?[...activities[dateShort],activity]:[activity];
+                return activities;
+            },{} as {[key:string]:Activity[]})
+        )
     }
     loadActivities =async ()=>{
         this.setLoadingInitial(true);
@@ -61,6 +70,7 @@ export default class ActivityStore{
     }
     private setActivity=(activity:Activity)=>{
         activity.date = activity.date.slice(0,activity.date.lastIndexOf(":"));
+        activity.dateShort = activity.date.split('T')[0];
         this.activityRegistry.set(activity.id,activity);
     }
     selectActivity=(id:string)=>{
@@ -68,14 +78,6 @@ export default class ActivityStore{
     }
     cancelSelectedActivity = ()=>{
         this.selectedActivity = undefined;
-    }
-    openForm= (id?:string)=>{
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        id?this.selectActivity(id):this.cancelSelectedActivity();
-        this.editMode = true;
-    }
-    closeForm = () =>{
-        this.editMode = false;
     }
     createActivity=async (activity:Activity)=>{
         this.loading=true;

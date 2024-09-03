@@ -3,17 +3,12 @@ import { Activity } from "../../../app/models/activity";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useStore } from "../../../app/store/store";
 import { observer } from "mobx-react-lite";
-import useWindowSize from "../../hooks/useWindowsSize";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 function ActivityForm() {
-  const location = useLocation();
-  const size = useWindowSize();
   const { activityStore } = useStore();
   const {
-    selectedActivity,
-    closeForm,
     createActivity,
     updateActivity,
     loading,
@@ -29,39 +24,24 @@ function ActivityForm() {
     description: "",
     city: "",
     date: "",
+    dateShort:"",
     venue: "",
   });
 
   useEffect(() => {
     if (id) loadActivity(id).then((activity) => setActivity(activity!));
-    if (
-      selectedActivity &&
-      size &&
-      size.width > 800 &&
-      !location.pathname.includes(`/createActivity`)
-    ) {
-      setActivity(selectedActivity);
-    }
-  }, [id,location.pathname,selectedActivity,size,loadActivity]);
-
-  
+  }, [id,loadActivity]);
 
   function handleSubmit() {
-    if (activity.id) {
-      updateActivity(activity).then(() => {
-        if (size && size.width < 800) navigate(`/activities/${activity.id}`);
-      });
-    } else {
+    if (activity.id) 
+      updateActivity(activity).then(() => navigate(`/activities/${activity.id}`));
+    else {
       createActivity(activity).then((id) =>
       {
         if(id)
-        {
-          if(size && size.width<800) navigate(`/activities/${activity.id}`)
-          else navigate(`/activities`);
-        }
-        else{
-          navigate(`/activities`);
-        }
+           navigate(`/activities/${activity.id}`)
+        else
+           navigate(`/activities`);
       }
       );
     }
@@ -122,24 +102,14 @@ function ActivityForm() {
           type="submit"
           content="Submit"
         />
-        {location.pathname.includes("/createActivity") ||
-        (size && size.width < 800) ? (
           <Button
             as={Link}
             to="/activities"
             floated="right"
             type="submit"
             content="Cancel"
-            onClick={() => closeForm()}
           />
-        ) : (
-          <Button
-            floated="right"
-            type="submit"
-            content="Cancel"
-            onClick={() => closeForm()}
-          />
-        )}
+
       </Form>
     </Segment>
   );
