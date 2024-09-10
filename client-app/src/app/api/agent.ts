@@ -4,13 +4,13 @@ import { toast } from 'react-toastify';
 import { router } from '../router/Routes';
 import { store } from '../store/store';
 
-const sleep=(delay:number)=>{
-    return new Promise((resolve)=>{
-        setTimeout(resolve,delay);
-    })
-}
+// const sleep=(delay:number)=>{
+//     return new Promise((resolve)=>{
+//         setTimeout(resolve,delay);
+//     })
+// }
 axios.interceptors.response.use(async response=>{
-    await sleep(1000);
+    //await sleep(1000);
     return response;
 },(error:AxiosError)=>{
     const {data,status,config} = error.response as AxiosResponse;

@@ -1,9 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "react-datepicker/dist/react-datepicker.css"
 import "react-calendar/dist/Calendar.css"
 import "semantic-ui-css/semantic.min.css";
 import "react-toastify/dist/ReactToastify.min.css"
-import "./app/layout/index.css";
+//import "./app/layout/index.css";
+
 
 import { StoreContext,store } from "./app/store/store.ts";
 import { RouterProvider } from "react-router-dom";
