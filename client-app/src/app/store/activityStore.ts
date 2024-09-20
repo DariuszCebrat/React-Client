@@ -2,6 +2,7 @@ import {   makeAutoObservable, runInAction } from "mobx"
 import { Activity } from "../models/activity";
 import { agent } from "../api/agent";
 import {format} from "date-fns"
+import { store } from "./store";
 
 export default class ActivityStore{
     activityRegistry=new Map<string,Activity>();
@@ -70,6 +71,15 @@ export default class ActivityStore{
        
     }
     private setActivity=(activity:Activity)=>{
+        const user = store.userStore.user;
+        if(user){
+            activity.isGoing = activity.profiles?.some(
+                a=>a.userName===user.userName
+            )
+            console.log(user.userName)
+            activity.isHost = activity.hostUserName===user.userName;
+            activity.host = activity.profiles?.find(x=>x.userName===activity.hostUserName);
+        }
         activity.date = new Date(activity.date!);
         activity.dateShort = format(activity.date!, "dd MMM yyyy");
         this.activityRegistry.set(activity.id,activity);
