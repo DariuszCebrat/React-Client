@@ -1,7 +1,6 @@
 import {useField} from "formik";
 import {Form, Label} from "semantic-ui-react";
 import DatePicker from 'react-datepicker';
-import {  pl } from "date-fns/locale";
 interface Props{
   name:string;
   dateFormat:string;
