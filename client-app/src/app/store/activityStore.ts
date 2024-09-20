@@ -3,6 +3,7 @@ import { Activity } from "../models/activity";
 import { agent } from "../api/agent";
 import {format} from "date-fns"
 import { store } from "./store";
+import { Profile } from "../models/profile";
 
 export default class ActivityStore{
     activityRegistry=new Map<string,Activity>();
@@ -76,7 +77,6 @@ export default class ActivityStore{
             activity.isGoing = activity.profiles?.some(
                 a=>a.userName===user.userName
             )
-            console.log(user.userName)
             activity.isHost = activity.hostUserName===user.userName;
             activity.host = activity.profiles?.find(x=>x.userName===activity.hostUserName);
         }
@@ -155,5 +155,34 @@ export default class ActivityStore{
     setLoadingInitial (value:boolean)
     {
         this.loadingInitial = value;
+    }
+    updateAttendance = async()=>{
+        const user = store.userStore.user;
+        this.loading = true;
+        if(this.selectedActivity?.id)
+            console.log("nie brak:"+ this.selectedActivity?.id)
+        else
+            console.log("brak")
+        try{
+            await agent.Activities.attend(this.selectedActivity!.id);
+            runInAction(()=>{
+                if(this.selectedActivity?.isGoing){
+                    this.selectedActivity.profiles = this.selectedActivity.profiles
+                        ?.filter( a=>a.userName!==user?.userName);
+                    this.selectedActivity.isGoing = false;
+                }else{
+                    const attendee = new Profile(user!);
+                    this.selectedActivity?.profiles?.push(attendee);
+                    this.selectedActivity!.isGoing=true;
+                }
+                this.activityRegistry.set(this.selectedActivity!.id,this.selectedActivity!)
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
+        finally{
+            runInAction(()=>this.loading=false);
+        }
     }
 }
