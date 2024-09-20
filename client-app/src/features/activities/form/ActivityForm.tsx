@@ -1,5 +1,5 @@
 import { Button, Header, Segment } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import {  ActivityFormValues } from "../../../app/models/activity";
 import { useEffect, useState } from "react";
 import { useStore } from "../../../app/store/store";
 import { observer } from "mobx-react-lite";
@@ -14,26 +14,17 @@ import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateTimeInput from "../../../app/common/form/MyDateTimeInput";
 
 function ActivityForm() {
+
   const { activityStore } = useStore();
   const {
     createActivity,
     updateActivity,
-    loading,
     loadActivity,
     loadingInitial,
   } = activityStore;
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activity, setActivity] = useState<Activity>({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    city: "",
-    date: null,
-    dateShort: "",
-    venue: "",
-  });
+  const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
   const validationSchema = Yup.object({
     title:Yup.string().required("The activity title is required"),
     description:Yup.string().required("The activity description is required"),
@@ -45,10 +36,10 @@ function ActivityForm() {
   })
 
   useEffect(() => {
-    if (id) loadActivity(id).then((activity) => setActivity(activity!));
+    if (id) loadActivity(id).then((activity) => setActivity(new ActivityFormValues(activity)));
   }, [id, loadActivity]);
 
-  function handleFormSubmit(activity:Activity) {
+  function handleFormSubmit(activity:ActivityFormValues) {
     if (activity.id)
       updateActivity(activity).then(() => navigate(`/activities/${activity.id}`));
     else {
@@ -91,14 +82,14 @@ function ActivityForm() {
             <MySelectInput  options={categoryOptions} placeholder="Category" name="category" />
             <MyDateTimeInput
               name="date"
-              dateFormat="dd MM, yyyy h:mm aa"
+              dateFormat="dd MM, yyyy HH:mm"
             />
             <Header content="Location Details" sub color="teal"/>
             <MyTextInput placeholder="City" name="city" />
             <MyTextInput placeholder="Venue" name="venue" />
             <Button
             disabled={isSubmitting|| !dirty|| !isValid}
-              loading={loading}
+              loading={isSubmitting}
               floated="right"
               positive
               type="submit"
