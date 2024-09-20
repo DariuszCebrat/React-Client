@@ -11,9 +11,12 @@ function ActivityListItem({activity}:Props) {
   return (
     <Segment.Group>
         <Segment>
+          {activity.isCancelled&&
+            <Label attached='top' color='red' content="Cancelled" style={{textAlign:"center"}}/>
+          }
           <Item.Group>
             <Item>
-              <Item.Image size="tiny" circular src="/assets/user.png" />
+              <Item.Image size="tiny" circular src="/assets/user.png" style={{marginBottom:3}}/>
               <Item.Content>
                 <Item.Header as={Link} to={`/activities/${activity.id}`} >{activity.title}</Item.Header>
                  <Item.Description>Hosted by {activity.host?.displayName}</Item.Description>
